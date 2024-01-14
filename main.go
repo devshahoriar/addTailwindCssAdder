@@ -15,7 +15,7 @@ func main() {
 		if _, err := os.Stat("./package.json"); err == nil {
 
 			prompt := promptui.Select{
-				Label: "Select your package manager",
+				Label: "Select your package manager:",
 				Items: []string{"npm", "yarn", "pnpm", "bun"},
 			}
 
@@ -26,21 +26,15 @@ func main() {
 				return
 			}
 
-			app := "node"
-
-			arg0 := "-v"
-
-			cmd := exec.Command(app, arg0)
-			stdout, err := cmd.Output()
-
+			stdout, err := exec.Command("node", "-v").Output()
 			if err != nil {
 				fmt.Println(err.Error())
-				return
+				os.Exit(1)
 			}
-
 			colorp.Bluef("your are using node->%s and %s.\n", strings.TrimSpace(string(stdout)), selectedPackge)
-			colorp.Grayln("Installing packages..")
-
+			colorp.Grayln("Installing packages...")
+			stdou, _ := exec.Command(selectedPackge, "install -D tailwindcss postcss autoprefixer").Output()
+			fmt.Println(string(stdou))
 		} else {
 			colorp.Redp("Couldn't find package.json.")
 		}
